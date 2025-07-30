@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>????? ??? ????? ???? ??????</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            direction: rtl; /* Set direction to right-to-left for Hebrew */
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .header {
+            color: #8a2be2; /* Purple */
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .subheader {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group input[type="date"],
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group input[type="tel"]:focus,
+        .form-group input[type="date"]:focus,
+        .form-group select:focus {
+            border-color: #8a2be2;
+            outline: none;
+        }
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+            text-align: right;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1em;
+            color: #333;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            position: relative;
+            background-color: #fff;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .checkbox-item input[type="checkbox"]:checked {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+        }
+        .checkbox-item input[type="checkbox"]:checked::before {
+            content: '\2713'; /* Checkmark character */
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .submit-button {
+            background: linear-gradient(to right, #8a2be2, #ff69b4); /* Purple to Pink gradient */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        .contact-icons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .contact-icon {
+            background: linear-gradient(to right, #25d366, #128c7e); /* WhatsApp green */
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+        .contact-icon.phone {
+            background: linear-gradient(to right, #8a2be2, #ff69b4); /* Purple to Pink gradient */
+        }
+        .contact-icon:hover {
+            transform: scale(1.05);
+        }
+        .address {
+            color: #777;
+            font-size: 1em;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .address i {
+            color: #8a2be2;
+        }
+        .message-box {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: right;
+            display: none; /* Hidden by default */
+        }
+        .message-box.show {
+            display: block;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #8a2be2;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none; /* Hidden by default */
+        }
+        .loading-spinner.show {
+            display: block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">??? ????????</div>
+        <div class="subheader">???? ?? ?????? ??? ????? ?? ??? ???????</div>
+
+        <form id="appointmentForm">
+            <div class="grid-cols-2">
+                <div class="form-group">
+                    <label for="fullName">?????? ?? ??? ???</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="?????? ?? ??? ???" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">???? ?????</label>
+                    <input type="tel" id="phone" name="phone" placeholder="???? ?????" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>???? ?????? ???? ?????</label>
+                <div class="subheader">???? ?? ??????? ????? ???? ??? (???? ????? ???)</div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="face" name="treatmentArea" value="face">
+                        <label for="face">????</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="chest" name="treatmentArea" value="chest">
+                        <label for="chest">???</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stomach" name="treatmentArea" value="stomach">
+                        <label for="stomach">???</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="armpits" name="treatmentArea" value="armpits">
+                        <label for="armpits">??????</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="legs" name="treatmentArea" value="legs">
+                        <label for="legs">??????</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="back" name="treatmentArea" value="back">
+                        <label for="back">??</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="hands" name="treatmentArea" value="hands">
+                        <label for="hands">???</label>
+                    </div>
+                    <!-- New Treatment Areas Added Below -->
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="yadim" name="treatmentArea" value="yadim">
+                        <label for="yadim">?????</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="yeshban" name="treatmentArea" value="yeshban">
+                        <label for="yeshban">????</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="pasYeshban" name="treatmentArea" value="pasYeshban">
+                        <label for="pasYeshban">?? ????</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="gavTachton" name="treatmentArea" value="gavTachton">
+                        <label for="gavTachton">?? ?????</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="chatziRegel" name="treatmentArea" value="chatziRegel">
+                        <label for="chatziRegel">??? ???</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="chatziYad" name="treatmentArea" value="chatziYad">
+                        <label for="chatziYad">??? ??</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="pasBaten" name="treatmentArea" value="pasBaten">
+                        <label for="pasBaten">?? ???</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="itzuvGabot" name="treatmentArea" value="itzuvGabot">
+                        <label for="itzuvGabot">????? ????</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="safam" name="treatmentArea" value="safam">
+                        <label for="safam">???(??? ?? ?????)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-cols-2">
+                <div class="form-group">
+                    <label for="appointmentDate">???? ?????</label>
+                    <input type="date" id="appointmentDate" name="appointmentDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentTime">???? ???</label>
+                    <select id="appointmentTime" name="appointmentTime" disabled required>
+                        <option value="">??? ????? ?????</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-button">????? ???</button>
+        </form>
+
+        <div id="messageBox" class="message-box"></div>
+        <div id="loadingSpinner" class="loading-spinner"></div>
+
+        <div class="contact-icons">
+            <a href="https://wa.me/972525570909" target="_blank" class="contact-icon whatsapp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="tel:+972525570909" class="contact-icon phone">
+                <i class="fas fa-phone"></i>
+            </a>
+        </div>
+        <div class="address">
+            <i class="fas fa-map-marker-alt"></i>
+            ????? 3, ??? ?????
+        </div>
+    </div>
+
+    <script>
+        // Define the N8N webhook URL for fetching existing appointments
+        // Changed to webhook for production environment
+        const N8N_FETCH_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook/ba968965-676e-4feb-a7ed-ae77665cf803';
+        // Define the N8N webhook URL for submitting new appointments
+        // Changed to webhook for production environment
+        const N8N_SUBMIT_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook/ba968965-676e-4feb-a7ed-ae77665cf803';
+
+        // Treatment area durations in minutes
+        const TREATMENT_DURATIONS = {
+            face: 30,
+            chest: 45,
+            stomach: 40,
+            armpits: 20,
+            legs: 60,
+            back: 50,
+            hands: 25,
+            // New Treatment Areas Durations
+            yadim: 30, // ?????
+            yeshban: 30, // ????
+            pasYeshban: 15, // ?? ????
+            gavTachton: 20, // ?? ?????
+            chatziRegel: 40, // ??? ???
+            chatziYad: 20, // ??? ??
+            pasBaten: 15, // ?? ???
+            itzuvGabot: 15, // ????? ????
+            safam: 10 // ???(??? ?? ?????)
+        };
+
+        // Business working hours
+        const WORKING_HOURS = {
+            sunday: { start: '10:00', end: '20:00' },
+            monday: { start: '10:00', end: '20:00' },
+            tuesday: { start: '10:00', end: '20:00' },
+            wednesday: { start: '10:00', end: '20:00' },
+            thursday: { start: '10:00', end: '20:00' },
+            friday: { start: '09:00', end: '13:00' },
+            saturday: null // Closed on Saturday
+        };
+
+        let existingAppointments = []; // Stores appointments fetched from N8N
+
+        const appointmentDateInput = document.getElementById('appointmentDate');
+        const appointmentTimeSelect = document.getElementById('appointmentTime');
+        const appointmentForm = document.getElementById('appointmentForm');
+        const messageBox = document.getElementById('messageBox');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        /**
+         * Displays a message in the message box.
+         * @param {string} message - The message to display.
+         * @param {string} type - The type of message (e.g., 'success', 'error').
+         */
+        function showMessage(message, type = 'info') {
+            messageBox.textContent = message;
+            messageBox.className = 'message-box show';
+            if (type === 'error') {
+                messageBox.style.backgroundColor = '#f8d7da';
+                messageBox.style.color = '#721c24';
+                messageBox.style.borderColor = '#f5c6cb';
+            } else if (type === 'success') {
+                messageBox.style.backgroundColor = '#d4edda';
+                messageBox.style.color = '#155724';
+                messageBox.style.borderColor = '#c3e6cb';
+            } else {
+                messageBox.style.backgroundColor = '#e2e3e5';
+                messageBox.style.color = '#383d41';
+                messageBox.style.borderColor = '#d6d8db';
+            }
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 5000); // Hide after 5 seconds
+        }
+
+        /**
+         * Shows or hides the loading spinner.
+         * @param {boolean} show - True to show, false to hide.
+         */
+        function toggleLoadingSpinner(show) {
+            if (show) {
+                loadingSpinner.classList.add('show');
+            } else {
+                loadingSpinner.classList.remove('show');
+            }
+        }
+
+        /**
+         * Fetches existing appointments from N8N when the form loads.
+         * Sends a "????? ????" message to N8N.
+         */
+        async function fetchExistingAppointmentsOnLoad() {
+            toggleLoadingSpinner(true);
+            let rawResponseText = ''; // Variable to store raw response text
+            try {
+                const response = await fetch(N8N_FETCH_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'cors', // Explicitly set CORS mode
+                    body: JSON.stringify({ message: '????? ????' }),
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('HTTP error response text:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                }
+
+                // Read response as text first to catch JSON parsing errors
+                rawResponseText = await response.text();
+                console.log('Raw data received from N8N:', rawResponseText); // Log raw data for debugging
+
+                let data;
+                try {
+                    data = JSON.parse(rawResponseText);
+                } catch (jsonError) {
+                    console.error('Failed to parse JSON from N8N response:', jsonError);
+                    throw new Error(`Failed to parse JSON from N8N response: ${jsonError.message}. Raw response: ${rawResponseText}`);
+                }
+
+
+                // Check if data is an array
+                if (Array.isArray(data)) {
+                    // If data is an array, transform each item
+                    existingAppointments = data.map(app => {
+                        // Check if app, start, end objects and their dateTime properties exist
+                        if (app && app.start && app.start.dateTime && app.end && app.end.dateTime) {
+                            return {
+                                start: app.start.dateTime,
+                                end: app.end.dateTime
+                            };
+                        } else {
+                            console.warn('Skipping appointment in array due to missing or invalid start/end dateTime in N8N response:', app);
+                            return null; // Return null for invalid appointments
+                        }
+                    }).filter(app => app !== null); // Filter out any null entries
+                    console.log('Transformed existing appointments:', existingAppointments);
+                    showMessage('?????? ??????? ????? ??????.', 'success');
+
+                } else if (data && typeof data === 'object' && data.start && data.end && data.start.dateTime && data.end.dateTime) {
+                    // This case: N8N returns a single full event object (not in an array)
+                    console.warn('N8N returned a single full event object instead of an array. Wrapping it in an array.');
+                    existingAppointments = [{
+                        start: data.start.dateTime,
+                        end: data.end.dateTime
+                    }];
+                    showMessage('?????? ??????? ????? ?????? (??????? ??? ???? ????).', 'success');
+                }
+                else {
+                    // General case for unexpected non-array response
+                    console.error('N8N response is not an array. Expected an array of appointments (each with start.dateTime and end.dateTime). Received:', data);
+                    existingAppointments = []; // Reset to empty array to prevent filter error
+                    showMessage('?????: N8N ????? ?????? ?????? ????. ??? ??? ??-Webhook ?-N8N ????? *????* ?? ???????? ????? ?????, ???? ?? ??????? ???? ???? "start" ?-"end" ?? "dateTime" ?????.', 'error');
+                }
+            } catch (error) {
+                console.error('????? ?????? ????? ?????? ?-N8N:', error);
+                // Include raw response text in the message if available and relevant
+                const errorMessage = `????? ?????? ????? ??????. ????? ?????? ????? ??? ?? ?????? CORS ?-N8N. ??? ??? ??-N8N ??? ????? ????? ???????? ???, ????? ????? JSON ????. ${error.message}`;
+                showMessage(errorMessage, 'error');
+            } finally {
+                toggleLoadingSpinner(false);
+            }
+        }
+
+        /**
+         * Calculates the total duration required for selected treatment areas.
+         * @returns {number} Total duration in minutes.
+         */
+        function calculateTotalTreatmentDuration() {
+            let totalDuration = 0;
+            document.querySelectorAll('input[name="treatmentArea"]:checked').forEach(checkbox => {
+                totalDuration += TREATMENT_DURATIONS[checkbox.value] || 0;
+            });
+            console.log('Total duration for selected areas:', totalDuration, 'minutes');
+            return totalDuration;
+        }
+
+        /**
+         * Generates available time slots for a given date, considering working hours and existing appointments.
+         * This function now focuses on finding slots immediately adjacent to existing appointments or working hours boundaries.
+         * @param {Date} selectedDate - The date for which to generate slots.
+         * @param {number} requiredDuration - The duration of the new appointment in minutes.
+         * @returns {Array<string>} An array of available time strings (e.g., "10:00", "10:30").
+         */
+        function getAvailableTimeSlots(selectedDate, requiredDuration) {
+            console.log('getAvailableTimeSlots called. existingAppointments:', existingAppointments, 'Type:', typeof existingAppointments, 'Is Array:', Array.isArray(existingAppointments));
+
+            const candidateSlots = new Set(); // Use a Set to automatically handle duplicates
+            const dayOfWeek = selectedDate.getDay(); // 0 for Sunday, 1 for Monday, etc.
+            const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const currentDayWorkingHours = WORKING_HOURS[dayNames[dayOfWeek]];
+
+            if (!currentDayWorkingHours) {
+                console.log(`Business is closed on ${dayNames[dayOfWeek]}. No slots available.`);
+                return []; // Business is closed on this day
+            }
+
+            const workStart = parseTime(currentDayWorkingHours.start);
+            const workEnd = parseTime(currentDayWorkingHours.end);
+
+            const workStartDateTime = new Date(selectedDate);
+            workStartDateTime.setHours(workStart.hours, workStart.minutes, 0, 0);
+
+            const workEndDateTime = new Date(selectedDate);
+            workEndDateTime.setHours(workEnd.hours, workEnd.minutes, 0, 0);
+
+            // Filter and map existing appointments to Date objects
+            const appointmentsOnSelectedDate = existingAppointments.filter(app => {
+                if (!app.start || isNaN(new Date(app.start).getTime())) {
+                    console.warn('Invalid appointment start date received:', app.start);
+                    return false;
+                }
+                const appStartDate = new Date(app.start);
+                return appStartDate.toDateString() === selectedDate.toDateString();
+            }).map(app => ({
+                start: new Date(app.start),
+                end: new Date(app.end)
+            }));
+
+            // Sort existing appointments by start time
+            appointmentsOnSelectedDate.sort((a, b) => a.start.getTime() - b.start.getTime());
+            console.log('Existing appointments on selected date (after parsing):', appointmentsOnSelectedDate);
+
+            /**
+             * Checks if a proposed slot overlaps with any existing appointment.
+             * @param {Date} proposedStart - Start time of the proposed slot.
+             * @param {Date} proposedEnd - End time of the proposed slot.
+             * @returns {boolean} True if overlaps, false otherwise.
+             */
+            function hasOverlap(proposedStart, proposedEnd) {
+                for (const existingApp of appointmentsOnSelectedDate) {
+                    // An overlap occurs if the proposed slot starts before the existing one ends AND ends after the existing one starts.
+                    if (proposedStart < existingApp.end && proposedEnd > existingApp.start) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            // Case 1: There are existing appointments on this day
+            if (appointmentsOnSelectedDate.length > 0) {
+                for (const existingApp of appointmentsOnSelectedDate) {
+                    // Option A: Slot immediately after an existing appointment
+                    let candidateStartAfter = new Date(existingApp.end);
+                    let candidateEndAfter = new Date(candidateStartAfter.getTime() + requiredDuration * 60 * 1000);
+
+                    // Ensure the candidate slot is within working hours and doesn't overlap with any other appointment
+                    if (candidateStartAfter.getTime() >= workStartDateTime.getTime() &&
+                        candidateEndAfter.getTime() <= workEndDateTime.getTime() &&
+                        !hasOverlap(candidateStartAfter, candidateEndAfter)) {
+                        candidateSlots.add(formatTime(candidateStartAfter));
+                    }
+
+                    // Option B: Slot immediately before an existing appointment
+                    let candidateEndBefore = new Date(existingApp.start);
+                    let candidateStartBefore = new Date(candidateEndBefore.getTime() - requiredDuration * 60 * 1000);
+
+                    // Ensure the candidate slot is within working hours and doesn't overlap with any other appointment
+                    if (candidateStartBefore.getTime() >= workStartDateTime.getTime() &&
+                        candidateEndBefore.getTime() <= workEndDateTime.getTime() &&
+                        !hasOverlap(candidateStartBefore, candidateEndBefore)) {
+                        candidateSlots.add(formatTime(candidateStartBefore));
+                    }
+                }
+            } else {
+                // Case 2: No existing appointments on this day, show all possible slots
+                let currentTime = new Date(workStartDateTime);
+                while (currentTime.getTime() + requiredDuration * 60 * 1000 <= workEndDateTime.getTime()) {
+                    candidateSlots.add(formatTime(currentTime));
+                    currentTime.setMinutes(currentTime.getMinutes() + 30); // Increment by 30 minutes
+                }
+            }
+
+            const finalAvailableSlots = Array.from(candidateSlots).sort();
+
+            console.log('Calculated available slots (adjacent/full day):', finalAvailableSlots);
+            if (finalAvailableSlots.length === 0) {
+                console.log('No available slots found for the selected date and duration.');
+            }
+            return finalAvailableSlots;
+        }
+
+        /**
+         * Parses a time string (e.g., "10:00") into hours and minutes.
+         * @param {string} timeString - The time string.
+         * @returns {{hours: number, minutes: number}}
+         */
+        function parseTime(timeString) {
+            const [hours, minutes] = timeString.split(':').map(Number);
+            return { hours, minutes };
+        }
+
+        /**
+         * Formats a Date object into a "HH:MM" time string.
+         * @param {Date} date - The Date object.
+         * @returns {string} Formatted time string.
+         */
+        function formatTime(date) {
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        /**
+         * Updates the available time slots dropdown based on selected date and treatment duration.
+         */
+        function updateTimeSlots() {
+            const selectedDateString = appointmentDateInput.value;
+            const totalDuration = calculateTotalTreatmentDuration();
+
+            appointmentTimeSelect.innerHTML = '<option value="">??? ???</option>'; // Reset options
+            appointmentTimeSelect.disabled = true; // Disable until a date is chosen
+
+            if (selectedDateString && totalDuration > 0) {
+                const selectedDate = new Date(selectedDateString + 'T00:00:00'); // Use T00:00:00 to avoid timezone issues
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Normalize today's date
+
+                // Disable past dates
+                if (selectedDate < today) {
+                    showMessage('?? ???? ????? ????? ????.', 'error');
+                    return;
+                }
+
+                const availableSlots = getAvailableTimeSlots(selectedDate, totalDuration);
+                console.log('Available slots after calculation:', availableSlots.length);
+
+
+                if (availableSlots.length > 0) {
+                    appointmentTimeSelect.disabled = false;
+                    availableSlots.forEach(slot => {
+                        const option = document.createElement('option');
+                        option.value = slot;
+                        option.textContent = slot;
+                        appointmentTimeSelect.appendChild(option);
+                    });
+                } else {
+                    showMessage('??? ????? ?????? ?????? ????? ?????? ?????. ??? ??? ????? ?? ??? ????? ???.', 'info');
+                }
+            } else if (selectedDateString && totalDuration === 0) {
+                showMessage('??? ??? ????? ????? ??? ????? ???? ??????.', 'info');
+            }
+        }
+
+        // Event listener for date input change
+        appointmentDateInput.addEventListener('change', updateTimeSlots);
+
+        // Event listener for checkbox changes
+        document.querySelectorAll('input[name="treatmentArea"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateTimeSlots);
+        });
+
+        // Event listener for form submission
+        appointmentForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const selectedAreas = Array.from(document.querySelectorAll('input[name="treatmentArea"]:checked'))
+                                       .map(cb => cb.value);
+
+            if (!fullName || !phone || !appointmentDate || !appointmentTime || selectedAreas.length === 0) {
+                showMessage('??? ??? ?? ?? ????? ???? ????? ?????.', 'error');
+                return;
+            }
+
+            const totalDuration = calculateTotalTreatmentDuration();
+            if (totalDuration === 0) {
+                showMessage('??? ??? ????? ?????.', 'error');
+                return;
+            }
+
+            const startDateTime = new Date(`${appointmentDate}T${appointmentTime}:00`);
+            const endDateTime = new Date(startDateTime.getTime() + totalDuration * 60 * 1000);
+
+            // Construct the appointment data in the exact desired format for N8N
+            const appointmentData = {
+                summary: `${fullName}\n${phone}`, // Name and phone in summary
+                start: {
+                    dateTime: startDateTime.toISOString(),
+                    timeZone: "Asia/Jerusalem" // Fixed timezone
+                },
+                end: {
+                    dateTime: endDateTime.toISOString(),
+                    timeZone: "Asia/Jerusalem" // Fixed timezone
+                },
+                creator: {
+                    email: "balikal.saas@gmail.com" // Fixed creator email
+                },
+                organizer: {
+                    email: "17ef1b66bfd3fe63181a3864829162400de1902d65b6328a330074b647ecbbb7@group.calendar.google.com", // Fixed organizer email
+                    displayName: "???? ?????",
+                    self: true
+                },
+                description: selectedAreas.join(', '), // Selected areas in description
+                eventType: "default", // Fixed eventType
+                reminders: {
+                    useDefault: true // Fixed reminders
+                },
+                status: "confirmed" // Fixed status
+                // id, created, updated, etag, htmlLink, iCalUID, kind, sequence are typically generated by Google Calendar/N8N
+            };
+
+            toggleLoadingSpinner(true);
+            try {
+                const response = await fetch(N8N_SUBMIT_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'cors', // Explicitly set CORS mode
+                    body: JSON.stringify(appointmentData),
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('HTTP error response text (submit):', errorText);
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                }
+
+                // No response expected from N8N for appointment submission, just success confirmation
+                showMessage('???? ???? ??????! ????? ??? ??? ??????.', 'success');
+                appointmentForm.reset(); // Clear the form
+                appointmentTimeSelect.innerHTML = '<option value="">??? ????? ?????</option>';
+                appointmentTimeSelect.disabled = true;
+                // Re-fetch appointments to update availability after a new booking (optional, but good for real-time)
+                fetchExistingAppointmentsOnLoad();
+
+            } catch (error) {
+                console.error('????? ?????? ???? ?-N8N:', error);
+                // More specific error message for the user
+                showMessage('????? ?????? ????. ????? ?????? ????? ??? ?? ?????? CORS ?-N8N. ??? ??? ??-N8N ??? ????? ????? ???????? ???, ????? ????? JSON ????.', 'error');
+            } finally {
+                toggleLoadingSpinner(false);
+            }
+        });
+
+        // Initialize by fetching existing appointments when the page loads
+        document.addEventListener('DOMContentLoaded', fetchExistingAppointmentsOnLoad);
+    </script>
+</body>
+</html>

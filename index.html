@@ -11,7 +11,8 @@
         body {
             font-family: 'Inter', sans-serif;
             direction: rtl; /* Set direction to right-to-left for Hebrew */
-            background-color: #f0f2f5;
+            /* New feminine and inviting background */
+            background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #e1bee7 100%); /* Soft pink, lavender, light purple */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,10 +20,11 @@
             padding: 20px;
         }
         .container {
-            background-color: #fff;
+            background-color: #f8f0fc; /* Lighter, more inviting background for the form container */
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            /* Softer shadow */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             width: 100%;
             max-width: 600px;
             text-align: center;
@@ -54,24 +56,38 @@
         .form-group select {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            border: 1px solid #e0b0d5; /* Softer border color */
+            border-radius: 10px; /* More rounded corners */
             font-size: 1em;
             box-sizing: border-box;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s; /* Added box-shadow transition */
         }
         .form-group input[type="text"]:focus,
         .form-group input[type="tel"]:focus,
         .form-group input[type="date"]:focus,
         .form-group select:focus {
             border-color: #8a2be2;
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2); /* Subtle focus glow */
             outline: none;
         }
-        .grid-cols-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        /* Align placeholder text to the right for all input types */
+        .form-group input::placeholder { /* Standard */
+            text-align: right;
         }
+        .form-group input::-webkit-input-placeholder { /* Chrome, Safari, Opera */
+            text-align: right;
+        }
+        .form-group input::-moz-placeholder { /* Firefox 19+ */
+            text-align: right;
+        }
+        .form-group input:-ms-input-placeholder { /* IE 10+ */
+            text-align: right;
+        }
+        .form-group input:-moz-placeholder { /* Firefox 18- */
+            text-align: right;
+        }
+
+        /* Removed grid-cols-2 from form elements to stack them vertically */
         .checkbox-group {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -125,10 +141,11 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             width: 100%;
             margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Initial subtle shadow */
         }
         .submit-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px); /* More pronounced lift */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* Larger, darker shadow on hover */
         }
         .contact-icons {
             display: flex;
@@ -154,7 +171,7 @@
             background: linear-gradient(to right, #8a2be2, #ff69b4); /* Purple to Pink gradient */
         }
         .contact-icon:hover {
-            transform: scale(1.05);
+            transform: scale(1.1); /* Slightly larger scale on hover */
         }
         .address {
             color: #777;
@@ -198,6 +215,30 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* Styles for the confirmation screen */
+        .confirmation-screen {
+            display: none; /* Hidden by default */
+            padding: 30px; /* Increased padding */
+            border-radius: 15px;
+            background-color: #f3e5f5; /* Light lavender for confirmation */
+            color: #6a1b9a; /* Darker purple text */
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em; /* Slightly larger font */
+            line-height: 1.8; /* Increased line height for readability */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .confirmation-screen.show {
+            display: block;
+        }
+        .confirmation-screen strong {
+            color: #8a2be2;
+            font-weight: 700;
+        }
+        /* Utility for hiding elements */
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -206,17 +247,18 @@
         <div class="subheader">מלאי את הפרטים שלך ונקבע לך תור במהירות</div>
 
         <form id="appointmentForm">
-            <div class="grid-cols-2">
-                <div class="form-group">
-                    <label for="fullName">הכניסי את השם שלך</label>
-                    <input type="text" id="fullName" name="fullName" placeholder="הכניסי את השם שלך" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">מספר טלפון</label>
-                    <input type="tel" id="phone" name="phone" placeholder="מספר טלפון" required>
-                </div>
+            <!-- Full Name -->
+            <div class="form-group">
+                <label for="fullName">הכניסי את השם שלך</label>
+                <input type="text" id="fullName" name="fullName" placeholder="הכניסי את השם שלך" required>
+            </div>
+            <!-- Phone Number -->
+            <div class="form-group">
+                <label for="phone">מספר טלפון</label>
+                <input type="tel" id="phone" name="phone" placeholder="מספר טלפון" required>
             </div>
 
+            <!-- Treatment Areas -->
             <div class="form-group">
                 <label>איזה אזורים תרצי לטפל?</label>
                 <div class="subheader">בחרי את האזורים שתרצי לטפל בהם (ניתן לבחור כמה)</div>
@@ -249,7 +291,7 @@
                         <input type="checkbox" id="hands" name="treatmentArea" value="hands">
                         <label for="hands">שחי</label>
                     </div>
-                    <!-- New Treatment Areas Added Below -->
+                    <!-- Existing New Treatment Areas -->
                     <div class="checkbox-item">
                         <input type="checkbox" id="yadim" name="treatmentArea" value="yadim">
                         <label for="yadim">ידיים</label>
@@ -286,24 +328,37 @@
                         <input type="checkbox" id="safam" name="treatmentArea" value="safam">
                         <label for="safam">שפם(חוט או שעווה)</label>
                     </div>
+                    <!-- New Exclusive Treatment Areas -->
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="wholeBodyNoFace" name="treatmentArea" value="wholeBodyNoFace">
+                        <label for="wholeBodyNoFace">כל הגוף (ללא פנים)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="wholeBodyWithFace" name="treatmentArea" value="wholeBodyWithFace">
+                        <label for="wholeBodyWithFace">כל הגוף (כולל פנים)</label>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid-cols-2">
-                <div class="form-group">
-                    <label for="appointmentDate">בחרי תאריך</label>
-                    <input type="date" id="appointmentDate" name="appointmentDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="appointmentTime">בחרי שעה</label>
-                    <select id="appointmentTime" name="appointmentTime" disabled required>
-                        <option value="">בחר תאריך תחילה</option>
-                    </select>
-                </div>
+            <!-- Appointment Date -->
+            <div class="form-group">
+                <label for="appointmentDate">בחרי תאריך</label>
+                <input type="date" id="appointmentDate" name="appointmentDate" required>
+            </div>
+            <!-- Appointment Time -->
+            <div class="form-group">
+                <label for="appointmentTime">בחרי שעה</label>
+                <select id="appointmentTime" name="appointmentTime" disabled required>
+                    <option value="">בחר תאריך תחילה</option>
+                </select>
             </div>
 
             <button type="submit" class="submit-button">קביעת תור</button>
         </form>
+
+        <div id="confirmationScreen" class="confirmation-screen">
+            <!-- Confirmation message will be inserted here -->
+        </div>
 
         <div id="messageBox" class="message-box"></div>
         <div id="loadingSpinner" class="loading-spinner"></div>
@@ -324,11 +379,11 @@
 
     <script>
         // Define the N8N webhook URL for fetching existing appointments
-        // Reverted to webhook-test for debugging N8N response
-        const N8N_FETCH_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook-test/ba968965-676e-4feb-a7ed-ae77665cf803';
+        // Changed to webhook for production environment
+        const N8N_FETCH_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook/ba968965-676e-4feb-a7ed-ae77665cf803';
         // Define the N8N webhook URL for submitting new appointments
-        // Reverted to webhook-test for debugging N8N response
-        const N8N_SUBMIT_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook-test/ba968965-676e-4feb-a7ed-ae77665cf803';
+        // Changed to webhook for production environment
+        const N8N_SUBMIT_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook/ba968965-676e-4feb-a7ed-ae77665cf803';
 
         // Treatment area durations in minutes
         const TREATMENT_DURATIONS = {
@@ -339,7 +394,6 @@
             legs: 10,
             back: 5,
             hands: 10,
-            // New Treatment Areas Durations
             yadim: 10, // ידיים
             yeshban: 5, // ישבן
             pasYeshban: 5, // פס ישבן
@@ -348,8 +402,33 @@
             chatziYad: 5, // חצי יד
             pasBaten: 5, // פס בטן
             itzuvGabot: 30, // עיצוב גבות
-            safam: 10 // שפם(חוט או שעווה)
+            safam: 10, // שפם(חוט או שעווה)
+            wholeBodyNoFace: 120, // 2 hours for whole body without face
+            wholeBodyWithFace: 150 // 2.5 hours for whole body with face
         };
+
+        // Mapping English treatment area values to Hebrew display names
+        const TREATMENT_AREA_HEBREW_NAMES = {
+            face: 'פנים',
+            chest: 'חזה',
+            stomach: 'בטן',
+            armpits: 'מפשעות',
+            legs: 'רגליים',
+            back: 'גב',
+            hands: 'שחי',
+            yadim: 'ידיים',
+            yeshban: 'ישבן',
+            pasYeshban: 'פס ישבן',
+            gavTachton: 'גב תחתון',
+            chatziRegel: 'חצי רגל',
+            chatziYad: 'חצי יד',
+            pasBaten: 'פס בטן',
+            itzuvGabot: 'עיצוב גבות',
+            safam: 'שפם (חוט או שעווה)',
+            wholeBodyNoFace: 'כל הגוף (ללא פנים)',
+            wholeBodyWithFace: 'כל הגוף (כולל פנים)'
+        };
+
 
         // Business working hours
         const WORKING_HOURS = {
@@ -369,14 +448,16 @@
         const appointmentForm = document.getElementById('appointmentForm');
         const messageBox = document.getElementById('messageBox');
         const loadingSpinner = document.getElementById('loadingSpinner');
+        const confirmationScreen = document.getElementById('confirmationScreen'); // Get the new confirmation screen element
 
         /**
          * Displays a message in the message box.
-         * @param {string} message - The message to display.
+         * @param {string} message - The message to display (can be HTML).
          * @param {string} type - The type of message (e.g., 'success', 'error').
+         * @param {number} [duration=5000] - How long the message should be visible in milliseconds.
          */
-        function showMessage(message, type = 'info') {
-            messageBox.textContent = message;
+        function showMessage(message, type = 'info', duration = 5000) {
+            messageBox.innerHTML = message; // Changed from textContent to innerHTML
             messageBox.className = 'message-box show';
             if (type === 'error') {
                 messageBox.style.backgroundColor = '#f8d7da';
@@ -393,7 +474,7 @@
             }
             setTimeout(() => {
                 messageBox.classList.remove('show');
-            }, 5000); // Hide after 5 seconds
+            }, duration); // Use the provided duration
         }
 
         /**
@@ -427,20 +508,24 @@
 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.error('HTTP error response text:', errorText);
-                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                    console.error('HTTP error response text (fetch):', errorText); // Added (fetch) for clarity
+                    showMessage(`שגיאה בטעינת תורים קיימים: ${errorText}`, 'error'); // Show error to user
+                    return; // Exit if response not OK
                 }
 
                 // Read response as text first to catch JSON parsing errors
                 rawResponseText = await response.text();
-                console.log('Raw data received from N8N:', rawResponseText); // Log raw data for debugging
+                console.log('Raw data received from N8N (fetch):', rawResponseText); // Added (fetch) for clarity
 
                 let data;
                 try {
                     data = JSON.parse(rawResponseText);
                 } catch (jsonError) {
-                    console.error('Failed to parse JSON from N8N response:', jsonError);
-                    throw new Error(`Failed to parse JSON from N8N response: ${jsonError.message}. Raw response: ${rawResponseText}`);
+                    console.error('Failed to parse JSON from N8N response (fetch):', jsonError); // Added (fetch)
+                    // Do NOT throw here, just show message and continue
+                    showMessage(`שגיאה בניתוח נתוני תורים קיימים מ-N8N: ${jsonError.message}. אנא ודא שה-N8N שלך מחזיר JSON תקין.`, 'error');
+                    existingAppointments = []; // Reset to empty array to prevent further errors
+                    return; // Exit if JSON is invalid
                 }
 
 
@@ -479,9 +564,8 @@
                     showMessage('שגיאה: N8N החזיר נתונים בפורמט שגוי. אנא ודא שה-Webhook ב-N8N מחזיר *מערך* של אובייקטי תורים מלאים, כאשר כל אובייקט מכיל שדות "start" ו-"end" עם "dateTime" מקונן.', 'error');
                 }
             } catch (error) {
-                console.error('שגיאה בטעינת תורים קיימים מ-N8N:', error);
-                // Include raw response text in the message if available and relevant
-                const errorMessage = `שגיאה בטעינת תורים קיימים. ייתכן שקיימת בעיית רשת או הגדרות CORS ב-N8N. אנא ודא שה-N8N שלך מאפשר בקשות מהדומיין הזה, ושהוא מחזיר JSON תקין. ${error.message}`;
+                console.error('שגיאה כללית בטעינת תורים קיימים מ-N8N:', error); // Changed message for clarity
+                const errorMessage = `שגיאה בטעינת תורים קיימים. ייתכן שקיימת בעיית רשת. אנא ודא שה-N8N שלך פועל ומחזיר JSON תקין. ${error.message}`;
                 showMessage(errorMessage, 'error');
             } finally {
                 toggleLoadingSpinner(false);
@@ -613,6 +697,42 @@
         }
 
         /**
+         * Handles the exclusive selection logic for "wholeBody" treatment areas.
+         * Disables/enables other checkboxes based on selection.
+         */
+        function handleExclusiveTreatmentAreas() {
+            const allCheckboxes = document.querySelectorAll('input[name="treatmentArea"]');
+            const wholeBodyNoFaceCheckbox = document.getElementById('wholeBodyNoFace');
+            const wholeBodyWithFaceCheckbox = document.getElementById('wholeBodyWithFace');
+
+            const isWholeBodyNoFaceChecked = wholeBodyNoFaceCheckbox.checked;
+            const isWholeBodyWithFaceChecked = wholeBodyWithFaceCheckbox.checked;
+
+            if (isWholeBodyNoFaceChecked || isWholeBodyWithFaceChecked) {
+                allCheckboxes.forEach(cb => {
+                    if (cb !== wholeBodyNoFaceCheckbox && cb !== wholeBodyWithFaceCheckbox) {
+                        cb.checked = false; // Uncheck other boxes
+                        cb.disabled = true;  // Disable other boxes
+                    }
+                });
+                // Ensure only one of the exclusive is checked
+                if (isWholeBodyNoFaceChecked && wholeBodyWithFaceCheckbox.checked) {
+                    wholeBodyWithFaceCheckbox.checked = false;
+                }
+                if (isWholeBodyWithFaceChecked && wholeBodyNoFaceCheckbox.checked) {
+                    wholeBodyNoFaceCheckbox.checked = false;
+                }
+            } else {
+                // If neither exclusive is checked, enable all other checkboxes
+                allCheckboxes.forEach(cb => {
+                    cb.disabled = false;
+                });
+            }
+            updateTimeSlots(); // Recalculate slots after changing checkbox states
+        }
+
+
+        /**
          * Updates the available time slots dropdown based on selected date and treatment duration.
          */
         function updateTimeSlots() {
@@ -657,10 +777,11 @@
         // Event listener for date input change
         appointmentDateInput.addEventListener('change', updateTimeSlots);
 
-        // Event listener for checkbox changes
+        // Event listener for all checkbox changes to trigger exclusive logic and time slot update
         document.querySelectorAll('input[name="treatmentArea"]').forEach(checkbox => {
-            checkbox.addEventListener('change', updateTimeSlots);
+            checkbox.addEventListener('change', handleExclusiveTreatmentAreas); // Call exclusive handler
         });
+
 
         // Event listener for form submission
         appointmentForm.addEventListener('submit', async (event) => {
@@ -687,6 +808,9 @@
             const startDateTime = new Date(`${appointmentDate}T${appointmentTime}:00`);
             const endDateTime = new Date(startDateTime.getTime() + totalDuration * 60 * 1000);
 
+            // Map selectedAreas to Hebrew names for the new field
+            const selectedAreasHebrew = selectedAreas.map(area => TREATMENT_AREA_HEBREW_NAMES[area] || area);
+
             // Construct the appointment data in the exact desired format for N8N
             const appointmentData = {
                 summary: `${fullName}\n${phone}`, // Name and phone in summary
@@ -706,7 +830,8 @@
                     displayName: "יומן תורים",
                     self: true
                 },
-                description: selectedAreas.join(', '), // Selected areas in description
+                description: selectedAreas.join(', '), // English values for description (as before)
+                descriptionHebrew: selectedAreasHebrew.join(', '), // NEW: Hebrew values for description
                 eventType: "default", // Fixed eventType
                 reminders: {
                     useDefault: true // Fixed reminders
@@ -732,13 +857,137 @@
                     throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
                 }
 
-                // No response expected from N8N for appointment submission, just success confirmation
-                showMessage('התור נקבע בהצלחה! ניצור עמך קשר לאישור.', 'success');
-                appointmentForm.reset(); // Clear the form
-                appointmentTimeSelect.innerHTML = '<option value="">בחר תאריך תחילה</option>';
-                appointmentTimeSelect.disabled = true;
-                // Re-fetch appointments to update availability after a new booking (optional, but good for real-time)
-                fetchExistingAppointmentsOnLoad();
+                // Read response as text first to catch JSON parsing errors
+                let rawResponseTextSubmit = await response.text(); // Use a different variable name
+                console.log('Raw data received from N8N (submit):', rawResponseTextSubmit); // Log raw data for debugging
+
+                let data;
+                try {
+                    data = JSON.parse(rawResponseTextSubmit);
+                } catch (jsonError) {
+                    console.error('Failed to parse JSON from N8N response (submit):', jsonError);
+                    // If response was OK, but JSON parsing failed, assume success with a warning about response details.
+                    if (response.ok) {
+                        // Construct message without detailed N8N data, using form data instead
+                        const clientName = fullName;
+                        const clientPhone = phone;
+                        const apptDate = new Date(`${appointmentDate}T${appointmentTime}:00`).toLocaleDateString('he-IL');
+                        const apptStartTime = appointmentTime;
+                        const apptEndTime = formatTime(endDateTime);
+                        // Use the already prepared Hebrew names for display
+                        const apptDescriptionHebrew = selectedAreasHebrew.join(', ');
+
+
+                        const successHtml = `
+                            <div class="text-green-700 text-xl font-semibold mb-4">התור נקבע בהצלחה!</div>
+                            <div class="text-gray-700 text-lg mb-6">
+                                פרטי התור שלך:
+                                <br>
+                                <strong>שם:</strong> ${clientName}
+                                <br>
+                                <strong>טלפון:</strong> ${clientPhone}
+                                <br>
+                                <strong>תאריך:</strong> ${apptDate}
+                                <br>
+                                <strong>שעה:</strong> ${apptStartTime} - ${apptEndTime}
+                                <br>
+                                <strong>אזורי טיפול:</strong> ${apptDescriptionHebrew}
+                            </div>
+                            <button id="bookAnotherBtn" class="submit-button mt-4">קבעי תור נוסף</button>
+                        `;
+                        confirmationScreen.innerHTML = successHtml;
+                        appointmentForm.classList.add('hidden');
+                        confirmationScreen.classList.add('show');
+                        document.getElementById('bookAnotherBtn').addEventListener('click', () => {
+                            confirmationScreen.classList.remove('show');
+                            appointmentForm.classList.remove('hidden');
+                            appointmentForm.reset();
+                            appointmentTimeSelect.innerHTML = '<option value="">בחר תאריך תחילה</option>';
+                            appointmentTimeSelect.disabled = true;
+                            fetchExistingAppointmentsOnLoad(); // Re-fetch when returning to form
+                        });
+                        toggleLoadingSpinner(false);
+                        return; // Exit here as we've handled the "success with warning"
+                    } else {
+                        // If response was NOT OK and JSON parsing failed, it's a definite error.
+                        showMessage(`שגיאה בניתוח תגובת N8N לאחר קביעת תור: ${jsonError.message}. תגובה גולמית: ${rawResponseTextSubmit}`, 'error');
+                        toggleLoadingSpinner(false);
+                        return; // Exit here
+                    }
+                }
+
+                // Main success logic (if N8N returned valid JSON)
+                let successHtml = '';
+                if (Array.isArray(data) && data.length > 0) {
+                    const bookedAppointment = data[0]; // Assuming N8N returns an array with the booked event
+                    const clientName = bookedAppointment.summary ? bookedAppointment.summary.split('\n')[0] : fullName; // Fallback to form data
+                    const clientPhone = bookedAppointment.summary ? bookedAppointment.summary.split('\n')[1] : phone; // Fallback to form data
+                    const apptDate = bookedAppointment.start && bookedAppointment.start.dateTime ? new Date(bookedAppointment.start.dateTime).toLocaleDateString('he-IL') : 'לא ידוע';
+                    const apptStartTime = bookedAppointment.start && bookedAppointment.start.dateTime ? formatTime(new Date(bookedAppointment.start.dateTime)) : 'לא ידוע';
+                    const apptEndTime = bookedAppointment.end && bookedAppointment.end.dateTime ? formatTime(new Date(bookedAppointment.end.dateTime)) : 'לא ידוע';
+                    // Use the already prepared Hebrew names for display
+                    const apptDescriptionHebrew = selectedAreasHebrew.join(', ');
+
+
+                    successHtml = `
+                        <div class="text-green-700 text-xl font-semibold mb-4">התור נקבע בהצלחה!</div>
+                        <div class="text-gray-700 text-lg mb-6">
+                            פרטי התור שלך:
+                            <br>
+                            <strong>שם:</strong> ${clientName}
+                            <br>
+                            <strong>טלפון:</strong> ${clientPhone}
+                            <br>
+                            <strong>תאריך:</strong> ${apptDate}
+                            <br>
+                            <strong>שעה:</strong> ${apptStartTime} - ${apptEndTime}
+                            <br>
+                            <strong>אזורי טיפול:</strong> ${apptDescriptionHebrew}
+                        </div>
+                        <button id="bookAnotherBtn" class="submit-button mt-4">קבעי תור נוסף</button>
+                    `;
+                } else {
+                    console.warn('N8N did not return a valid booked appointment object after submission:', data);
+                    // Fallback message if N8N response is valid JSON but not in expected array format
+                    const clientName = fullName;
+                    const clientPhone = phone;
+                    const apptDate = new Date(`${appointmentDate}T${appointmentTime}:00`).toLocaleDateString('he-IL');
+                    const apptStartTime = appointmentTime;
+                    const apptEndTime = formatTime(endDateTime);
+                    // Use the already prepared Hebrew names for display
+                    const apptDescriptionHebrew = selectedAreasHebrew.join(', ');
+
+
+                    successHtml = `
+                        <div class="text-green-700 text-xl font-semibold mb-4">התור נקבע בהצלחה!</div>
+                        <div class="text-gray-700 text-lg mb-6">
+                            פרטי התור שלך:
+                            <br>
+                            <strong>שם:</strong> ${clientName}
+                            <br>
+                            <strong>טלפון:</strong> ${clientPhone}
+                            <br>
+                            <strong>תאריך:</strong> ${apptDate}
+                            <br>
+                            <strong>שעה:</strong> ${apptStartTime} - ${apptEndTime}
+                            <br>
+                            <strong>אזורי טיפול:</strong> ${apptDescriptionHebrew}
+                        </div>
+                        <button id="bookAnotherBtn" class="submit-button mt-4">קבעי תור נוסף</button>
+                    `;
+                }
+
+                confirmationScreen.innerHTML = successHtml;
+                appointmentForm.classList.add('hidden');
+                confirmationScreen.classList.add('show');
+                document.getElementById('bookAnotherBtn').addEventListener('click', () => {
+                    confirmationScreen.classList.remove('show');
+                    appointmentForm.classList.remove('hidden');
+                    appointmentForm.reset();
+                    appointmentTimeSelect.innerHTML = '<option value="">בחר תאריך תחילה</option>';
+                    appointmentTimeSelect.disabled = true;
+                    fetchExistingAppointmentsOnLoad(); // Re-fetch when returning to form
+                });
 
             } catch (error) {
                 console.error('שגיאה בשליחת התור ל-N8N:', error);

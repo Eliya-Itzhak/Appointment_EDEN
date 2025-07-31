@@ -324,11 +324,11 @@
 
     <script>
         // Define the N8N webhook URL for fetching existing appointments
-        // Changed to webhook for production environment
-        const N8N_FETCH_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook/ba968965-676e-4feb-a7ed-ae77665cf803';
+        // Reverted to webhook-test for debugging N8N response
+        const N8N_FETCH_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook-test/ba968965-676e-4feb-a7ed-ae77665cf803';
         // Define the N8N webhook URL for submitting new appointments
-        // Changed to webhook for production environment
-        const N8N_SUBMIT_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook/ba968965-676e-4feb-a7ed-ae77665cf803';
+        // Reverted to webhook-test for debugging N8N response
+        const N8N_SUBMIT_WEBHOOK_URL = 'https://balikal.app.n8n.cloud/webhook-test/ba968965-676e-4feb-a7ed-ae77665cf803';
 
         // Treatment area durations in minutes
         const TREATMENT_DURATIONS = {
@@ -459,7 +459,7 @@
                             return null; // Return null for invalid appointments
                         }
                     }).filter(app => app !== null); // Filter out any null entries
-                    console.log('Transformed existing appointments:', existingAppointments);
+                    console.log('Transformed existing appointments (after fetch):', existingAppointments); // Added log
                     showMessage('התורים הקיימים נטענו בהצלחה.', 'success');
 
                 } else if (data && typeof data === 'object' && data.start && data.end && data.start.dateTime && data.end.dateTime) {
@@ -469,7 +469,8 @@
                         start: data.start.dateTime,
                         end: data.end.dateTime
                     }];
-                    showMessage('success', 'success');
+                    console.log('Transformed existing appointments (after fetch, single object):', existingAppointments); // Added log
+                    showMessage('התורים הקיימים נטענו בהצלחה (אובייקט תור בודד זוהה).', 'success');
                 }
                 else {
                     // General case for unexpected non-array response
@@ -502,13 +503,14 @@
 
         /**
          * Generates available time slots for a given date, considering working hours and existing appointments.
-         * This function now focuses on finding slots immediately adjacent to existing appointments or working hours boundaries.
+         * This function now focuses on finding slots immediately adjacent to the earliest start and latest end
+         * of all appointments on the selected day.
          * @param {Date} selectedDate - The date for which to generate slots.
          * @param {number} requiredDuration - The duration of the new appointment in minutes.
          * @returns {Array<string>} An array of available time strings (e.g., "10:00", "10:30").
          */
         function getAvailableTimeSlots(selectedDate, requiredDuration) {
-            console.log('getAvailableTimeSlots called. existingAppointments:', existingAppointments, 'Type:', typeof existingAppointments, 'Is Array:', Array.isArray(existingAppointments));
+            console.log('getAvailableTimeSlots called. existingAppointments:', existingAppointments, 'Type:', typeof existingAppointments, 'Is Array:', Array.isArray(existingAppointments)); // Added log
 
             const candidateSlots = new Set(); // Use a Set to automatically handle duplicates
             const dayOfWeek = selectedDate.getDay(); // 0 for Sunday, 1 for Monday, etc.
@@ -529,7 +531,7 @@
             const workEndDateTime = new Date(selectedDate);
             workEndDateTime.setHours(workEnd.hours, workEnd.minutes, 0, 0);
 
-            // Filter and map existing appointments to Date objects
+            // Filter and map existing appointments to Date objects for the selected date
             const appointmentsOnSelectedDate = existingAppointments.filter(app => {
                 if (!app.start || isNaN(new Date(app.start).getTime())) {
                     console.warn('Invalid appointment start date received:', app.start);
@@ -542,53 +544,37 @@
                 end: new Date(app.end)
             }));
 
-            // Sort existing appointments by start time
+            // Sort existing appointments by start time to easily find the earliest and latest
             appointmentsOnSelectedDate.sort((a, b) => a.start.getTime() - b.start.getTime());
             console.log('Existing appointments on selected date (after parsing):', appointmentsOnSelectedDate);
 
-            /**
-             * Checks if a proposed slot overlaps with any existing appointment.
-             * @param {Date} proposedStart - Start time of the proposed slot.
-             * @param {Date} proposedEnd - End time of the proposed slot.
-             * @returns {boolean} True if overlaps, false otherwise.
-             */
-            function hasOverlap(proposedStart, proposedEnd) {
-                for (const existingApp of appointmentsOnSelectedDate) {
-                    // An overlap occurs if the proposed slot starts before the existing one ends AND ends after the existing one starts.
-                    if (proposedStart < existingApp.end && proposedEnd > existingApp.start) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            // Case 1: There are existing appointments on this day
+            // If there are existing appointments, calculate slots adjacent to the consolidated block
             if (appointmentsOnSelectedDate.length > 0) {
-                for (const existingApp of appointmentsOnSelectedDate) {
-                    // Option A: Slot immediately after an existing appointment
-                    let candidateStartAfter = new Date(existingApp.end);
-                    let candidateEndAfter = new Date(candidateStartAfter.getTime() + requiredDuration * 60 * 1000);
+                const earliestAppStart = appointmentsOnSelectedDate[0].start; // Start of the first appointment
+                const latestAppEnd = appointmentsOnSelectedDate[appointmentsOnSelectedDate.length - 1].end; // End of the last appointment
 
-                    // Ensure the candidate slot is within working hours and doesn't overlap with any other appointment
-                    if (candidateStartAfter.getTime() >= workStartDateTime.getTime() &&
-                        candidateEndAfter.getTime() <= workEndDateTime.getTime() &&
-                        !hasOverlap(candidateStartAfter, candidateEndAfter)) {
-                        candidateSlots.add(formatTime(candidateStartAfter));
-                    }
+                // Candidate 1: Slot immediately before the earliest existing appointment
+                let candidateEndBefore = new Date(earliestAppStart);
+                let candidateStartBefore = new Date(candidateEndBefore.getTime() - requiredDuration * 60 * 1000);
 
-                    // Option B: Slot immediately before an existing appointment
-                    let candidateEndBefore = new Date(existingApp.start);
-                    let candidateStartBefore = new Date(candidateEndBefore.getTime() - requiredDuration * 60 * 1000);
-
-                    // Ensure the candidate slot is within working hours and doesn't overlap with any other appointment
-                    if (candidateStartBefore.getTime() >= workStartDateTime.getTime() &&
-                        candidateEndBefore.getTime() <= workEndDateTime.getTime() &&
-                        !hasOverlap(candidateStartBefore, candidateEndBefore)) {
-                        candidateSlots.add(formatTime(candidateStartBefore));
-                    }
+                // Check if this potential slot is within working hours and ends exactly at the earliest appointment's start
+                if (candidateStartBefore.getTime() >= workStartDateTime.getTime() &&
+                    candidateEndBefore.getTime() === earliestAppStart.getTime()) {
+                    candidateSlots.add(formatTime(candidateStartBefore));
                 }
+
+                // Candidate 2: Slot immediately after the latest existing appointment
+                let candidateStartAfter = new Date(latestAppEnd);
+                let candidateEndAfter = new Date(candidateStartAfter.getTime() + requiredDuration * 60 * 1000);
+
+                // Check if this potential slot is within working hours and starts exactly at the latest appointment's end
+                if (candidateEndAfter.getTime() <= workEndDateTime.getTime() &&
+                    candidateStartAfter.getTime() === latestAppEnd.getTime()) {
+                    candidateSlots.add(formatTime(candidateStartAfter));
+                }
+
             } else {
-                // Case 2: No existing appointments on this day, show all possible slots
+                // Case: No existing appointments on this day, show all possible slots
                 let currentTime = new Date(workStartDateTime);
                 while (currentTime.getTime() + requiredDuration * 60 * 1000 <= workEndDateTime.getTime()) {
                     candidateSlots.add(formatTime(currentTime));
@@ -598,7 +584,7 @@
 
             const finalAvailableSlots = Array.from(candidateSlots).sort();
 
-            console.log('Calculated available slots (adjacent/full day):', finalAvailableSlots);
+            console.log('Calculated available slots (adjacent to earliest/latest or full day):', finalAvailableSlots);
             if (finalAvailableSlots.length === 0) {
                 console.log('No available slots found for the selected date and duration.');
             }
@@ -630,6 +616,7 @@
          * Updates the available time slots dropdown based on selected date and treatment duration.
          */
         function updateTimeSlots() {
+            console.log('existingAppointments at start of updateTimeSlots:', existingAppointments); // Added log
             const selectedDateString = appointmentDateInput.value;
             const totalDuration = calculateTotalTreatmentDuration();
 
